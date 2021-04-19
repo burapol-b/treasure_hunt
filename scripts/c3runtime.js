@@ -3083,18 +3083,23 @@ this._ray;return ray.DidCollide()?ray.hitY+length*ray.normalY:0},NormalAngle(){c
 		C3.Plugins.Sprite.Cnds.CompareX,
 		C3.Plugins.System.Cnds.Else,
 		C3.Plugins.Sprite.Cnds.OnAnimFinished,
+		C3.Plugins.Sprite.Cnds.OnCollision,
+		C3.Plugins.System.Acts.SubVar,
+		C3.Plugins.Sprite.Acts.Destroy,
+		C3.Plugins.System.Cnds.CompareVar,
 		C3.Plugins.System.Cnds.EveryTick,
 		C3.Plugins.Sprite.Acts.SetAnim,
+		C3.Plugins.Sprite.Acts.SetWidth,
 		C3.Plugins.Sprite.Cnds.OnCreated,
 		C3.Plugins.Sprite.Cnds.IsMirrored,
 		C3.Plugins.Sprite.Acts.SetAngle,
-		C3.Plugins.Sprite.Cnds.OnCollision,
 		C3.Behaviors.Bullet.Acts.Bounce,
 		C3.Plugins.Mouse.Cnds.OnClick,
 		C3.Plugins.Sprite.Acts.Spawn,
 		C3.Plugins.Sprite.Acts.SetTowardPosition,
 		C3.Plugins.Mouse.Exps.X,
 		C3.Plugins.System.Cnds.OnLayoutStart,
+		C3.Plugins.Audio.Acts.Play,
 		C3.Plugins.Sprite.Cnds.OnAnyAnimFinished
 		];
 	};
@@ -3119,7 +3124,6 @@ this._ray;return ray.DidCollide()?ray.hitY+length*ray.normalY:0},NormalAngle(){c
 		{dist: 0},
 		{LineOfSight: 0},
 		{Boss: 0},
-		{ProgressBar: 0},
 		{TiledBackground7: 0},
 		{TiledBackground4: 0},
 		{TiledBackground6: 0},
@@ -3138,8 +3142,17 @@ this._ray;return ray.DidCollide()?ray.hitY+length*ray.normalY:0},NormalAngle(){c
 		{TiledBackground19: 0},
 		{flag: 0},
 		{Audio: 0},
+		{TiledBackground20: 0},
+		{bosshp_border: 0},
+		{initialWidth: 0},
+		{bosshp_healt: 0},
+		{playerhp_border: 0},
+		{playerhp_healt: 0},
 		{Sprite: 0},
-		{TiledBackground20: 0}
+		{PlayerHP: 0},
+		{PlayerHPMax: 0},
+		{BossHP: 0},
+		{BossHPMax: 0}
 	];
 }
 
@@ -3257,8 +3270,9 @@ this._ray;return ray.DidCollide()?ray.hitY+length*ray.normalY:0},NormalAngle(){c
 		() => "atk",
 		() => "run",
 		() => "idle",
-		() => 32,
+		() => 128,
 		() => "atk1",
+		() => 20,
 		p => {
 			const n0 = p._GetNode(0);
 			const n1 = p._GetNode(1);
@@ -3270,13 +3284,23 @@ this._ray;return ray.DidCollide()?ray.hitY+length*ray.normalY:0},NormalAngle(){c
 			const n0 = p._GetNode(0);
 			return () => n0.ExpInstVar();
 		},
+		p => {
+			const n0 = p._GetNode(0);
+			const v1 = p._GetNode(1).GetVar();
+			const v2 = p._GetNode(2).GetVar();
+			const n3 = p._GetNode(3);
+			const v4 = p._GetNode(4).GetVar();
+			return () => (n0.ExpInstVar() + ((v1.GetValue() - v2.GetValue()) * (n3.ExpInstVar() / v4.GetValue())));
+		},
 		() => "Attack & Bullet",
 		() => 180,
 		p => {
 			const f0 = p._GetNode(0).GetBoundMethod();
 			return () => f0();
 		},
-		() => "Character"
+		() => "Character",
+		() => -15,
+		() => ""
 	];
 }
 
