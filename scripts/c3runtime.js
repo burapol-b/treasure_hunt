@@ -2895,6 +2895,143 @@ AddRemoteURL(url,type,name){this._remoteUrls.set(name.toLowerCase(),{url,type})}
 SampleRate(){return this._sampleRate},CurrentTime(){if(self["C3_GetAudioContextCurrentTime"])return self["C3_GetAudioContextCurrentTime"]();else return performance.now()/1E3}}};
 
 
+'use strict';{const C3=self.C3;const DOM_COMPONENT_ID="button";C3.Plugins.Button=class ButtonPlugin extends C3.SDKDOMPluginBase{constructor(opts){super(opts,DOM_COMPONENT_ID);this.AddElementMessageHandler("click",(sdkInst,e)=>sdkInst._OnClick(e))}Release(){super.Release()}}};
+
+
+'use strict';{const C3=self.C3;C3.Plugins.Button.Type=class ButtonType extends C3.SDKTypeBase{constructor(objectClass){super(objectClass)}Release(){super.Release()}OnCreate(){}}};
+
+
+'use strict';{const C3=self.C3;const TYPE=0;const TEXT=1;const TOOLTIP=2;const INITIALLY_VISIBLE=3;const ENABLE=4;const AUTO_FONT_SIZE=5;const CHECKED=6;const ID=7;const DOM_COMPONENT_ID="button";C3.Plugins.Button.Instance=class ButtonInstance extends C3.SDKDOMInstanceBase{constructor(inst,properties){super(inst,DOM_COMPONENT_ID);this._text="OK";this._isCheckbox=false;this._isChecked=false;this._title="";this._id="";this._isEnabled=true;this._autoFontSize=true;if(properties){this._isCheckbox=properties[TYPE]===
+1;this._text=properties[TEXT];this._title=properties[TOOLTIP];this.GetWorldInfo().SetVisible(properties[INITIALLY_VISIBLE]);this._isEnabled=properties[ENABLE];this._autoFontSize=properties[AUTO_FONT_SIZE];this._isChecked=properties[CHECKED];this._id=properties[ID]}this.CreateElement({"id":this._id})}Release(){super.Release()}GetElementState(){return{"text":this._text,"isCheckbox":this._isCheckbox,"isChecked":this._isChecked,"title":this._title,"isVisible":this.GetWorldInfo().IsVisible(),"isEnabled":this._isEnabled}}async _OnClick(e){this._isChecked=
+e["isChecked"];this.GetScriptInterface().dispatchEvent(C3.New(C3.Event,"click",true));await this.TriggerAsync(C3.Plugins.Button.Cnds.OnClicked)}_SetText(text){if(this._text===text)return;this._text=text;this.UpdateElementState()}_GetText(){return this._text}_SetTooltip(title){if(this._title===title)return;this._title=title;this.UpdateElementState()}_GetTooltip(){return this._title}_SetEnabled(e){e=!!e;if(this._isEnabled===e)return;this._isEnabled=e;this.UpdateElementState()}_IsEnabled(){return this._isEnabled}_SetChecked(c){if(!this._isCheckbox)return;
+c=!!c;if(this._isChecked===c)return;this._isChecked=c;this.UpdateElementState()}_IsChecked(){return this._isChecked}Draw(renderer){}SaveToJson(){return{"text":this._text,"checked":this._isChecked,"title":this._title,"enabled":this._isEnabled}}LoadFromJson(o){this._text=o["text"];this._isChecked=o["checked"];this._title=o["title"];this._isEnabled=o["enabled"];this.UpdateElementState()}GetPropertyValueByIndex(index){switch(index){case TEXT:return this._text;case TOOLTIP:return this._title;case ENABLE:return this._isEnabled;
+case AUTO_FONT_SIZE:return this._autoFontSize;case CHECKED:return this._isChecked;case ID:return this._id}}SetPropertyValueByIndex(index,value){switch(index){case TEXT:if(this._text===value)return;this._text=value;this.UpdateElementState();break;case TOOLTIP:if(this._title===value)return;this._title=value;this.UpdateElementState();break;case ENABLE:if(this._isEnabled===!!value)return;this._isEnabled=!!value;this.UpdateElementState();break;case AUTO_FONT_SIZE:this._autoFontSize=!!value;break;case CHECKED:if(this._isChecked===
+!!value)return;this._isChecked=!!value;this.UpdateElementState();break;case ID:if(this._id===!!value)return;this._id=value;this.UpdateElementState();break}}GetDebuggerProperties(){const Acts=C3.Plugins.Button.Acts;const prefix="plugins.button";return[{title:prefix+".name",properties:[{name:prefix+".properties.text.name",value:this._text,onedit:v=>this.CallAction(Acts.SetText,v)},{name:prefix+".properties.enabled.name",value:this._isEnabled,onedit:v=>this.CallAction(Acts.SetEnabled,v)},{name:prefix+
+".properties.checked.name",value:this._isChecked,onedit:v=>this.CallAction(Acts.SetChecked,v)}]}]}GetScriptInterfaceClass(){return self.IButtonInstance}};const map=new WeakMap;self.IButtonInstance=class IButtonInstance extends self.IDOMInstance{constructor(){super();map.set(this,self.IInstance._GetInitInst().GetSdkInstance())}set text(str){map.get(this)._SetText(str)}get text(){return map.get(this)._GetText()}set tooltip(str){map.get(this)._SetTooltip(str)}get tooltip(){return map.get(this)._GetTooltip()}set isEnabled(e){map.get(this)._SetEnabled(e)}get isEnabled(){return map.get(this)._IsEnabled()}set isChecked(c){map.get(this)._SetChecked(c)}get isChecked(){return map.get(this)._IsChecked()}}};
+
+
+'use strict';{const C3=self.C3;C3.Plugins.Button.Cnds={OnClicked(){return true},IsChecked(){return this._isChecked},CompareText(str,caseSensitive){if(caseSensitive)return this._text===str;else return C3.equalsNoCase(this._text,str)}}};
+
+
+'use strict';{const C3=self.C3;C3.Plugins.Button.Acts={SetText(text){this._SetText(text)},SetTooltip(title){this._SetTooltip(title)},SetChecked(c){this._SetChecked(c!==0)},ToggleChecked(){if(!this._isCheckbox)return;this._isChecked=!this._isChecked;this.UpdateElementState()}}};
+
+
+'use strict';{const C3=self.C3;C3.Plugins.Button.Exps={Text(){return this._text}}};
+
+
+'use strict';{const C3=self.C3;C3.Plugins.SVGPicture=class SVGPicturePlugin extends C3.SDKPluginBase{constructor(opts){super(opts);this._rasterManager=null}Release(){super.Release()}_GetRasterManager(){if(!this._rasterManager){this._rasterManager=C3.New(C3.SVGRasterManager);this._rasterManager.SetGetBaseSizeCallback(filename=>this._GetSvgBaseSize(filename));this._rasterManager.SetRasterAtSizeCallback((sf,r,sw,sh,iw,ih)=>this._RasterSvgAtSize(sf,r,sw,sh,iw,ih));this._rasterManager.SetReleaseResultCallback(texture=>
+this._ReleaseRasterResult(texture));this._rasterManager.SetRedrawCallback(()=>this._Redraw());this._rasterManager.SetNpotSurfaceAllowed(this.GetRuntime().GetWebGLRenderer().SupportsNPOTTextures())}return this._rasterManager}async _GetSvgBaseSize(filename){const runtime=this.GetRuntime();const blob=await runtime.GetAssetManager().FetchBlob(filename);return await runtime.GetSvgImageSize(blob)}async _RasterSvgAtSize(filename,renderer,surfaceWidth,surfaceHeight,imageWidth,imageHeight){const runtime=this.GetRuntime();
+const blob=await runtime.GetAssetManager().FetchBlob(filename);const textureOpts={mipMap:true,mipMapQuality:"high"};let imageBitmapOpts=null;if(C3.Supports.ImageBitmapOptions){imageBitmapOpts={"premultiplyAlpha":"premultiply"};textureOpts.premultiplyAlpha=false}const drawable=await runtime.RasterSvgImage(blob,imageWidth,imageHeight,surfaceWidth,surfaceHeight,imageBitmapOpts);let texture=null;if(C3.Supports.ImageBitmapOptions)texture=renderer.CreateStaticTexture(drawable,textureOpts);else texture=
+await renderer.CreateStaticTextureAsync(drawable,textureOpts);return texture}_ReleaseRasterResult(texture){texture.GetRenderer().DeleteTexture(texture)}_Redraw(){this.GetRuntime().UpdateRender()}}};
+
+
+'use strict';{const C3=self.C3;C3.Plugins.SVGPicture.Type=class SVGPictureType extends C3.SDKTypeBase{constructor(objectClass){super(objectClass)}Release(){super.Release()}OnCreate(){}LoadTextures(renderer){}ReleaseTextures(){}PreloadTexturesWithInstances(renderer){const rasterImages=new Set;for(const inst of this.GetObjectClass().GetInstances()){const sdkInst=inst.GetSdkInstance();sdkInst._UpdateRasterImage();const rasterImage=sdkInst._GetRasterImage();if(rasterImage)rasterImages.add(rasterImage)}return Promise.all([...rasterImages].map(ri=>
+this._PreloadRasterImage(renderer,ri)))}async _PreloadRasterImage(renderer,rasterImage){await rasterImage.WhenBaseSizeReady();const baseWidth=rasterImage.GetBaseWidth();const baseHeight=rasterImage.GetBaseHeight();const preloadSize=256;const preloadAspectRatio=1;const svgAspectRatio=baseWidth/baseHeight;let rasterImageWidth=0;let rasterImageHeight=0;if(preloadAspectRatio>svgAspectRatio){rasterImageWidth=preloadSize*svgAspectRatio;rasterImageHeight=preloadSize}else{rasterImageWidth=preloadSize;rasterImageHeight=
+preloadSize/svgAspectRatio}await rasterImage.StartRasterForSize(renderer,rasterImageWidth,rasterImageHeight)}}};
+
+
+'use strict';{const C3=self.C3;const SVG_FILENAME=0;const INITIALLY_VISIBLE=1;const ORIGIN=2;const tempRect=C3.New(C3.Rect);const tempQuad=C3.New(C3.Quad);C3.Plugins.SVGPicture.Instance=class SVGPictureInstance extends C3.SDKWorldInstanceBase{constructor(inst,properties){super(inst);this._svgFilename="";this._rasterImage=null;this._collisionPoly=C3.New(C3.CollisionPoly);this.GetWorldInfo().SetSourceCollisionPoly(this._collisionPoly);if(properties){this._svgFilename=properties[SVG_FILENAME];this.GetWorldInfo().SetVisible(!!properties[INITIALLY_VISIBLE])}this._UpdateRasterImage();
+this.HandleWebGLContextLoss()}Release(){this._ReleaseRasterImage();super.Release()}_GetRasterManager(){return this.GetPlugin()._GetRasterManager()}_ReleaseRasterImage(){if(this._rasterImage){this._rasterImage.Release();this._rasterImage=null}}_UpdateRasterImage(){if(!this._svgFilename){this._ReleaseRasterImage();this._UpdateCollisionPolygon();return}if(this._rasterImage&&this._rasterImage.GetDataSource()===this._svgFilename)return;this._ReleaseRasterImage();this._rasterImage=this._GetRasterManager().AddImage(this._svgFilename);
+this._rasterImage.WhenBaseSizeReady().then(()=>this._UpdateCollisionPolygon())}_UpdateCollisionPolygon(){const wi=this.GetWorldInfo();const objectWidth=Math.abs(wi.GetWidth());const objectHeight=Math.abs(wi.GetHeight());let objectContentWidth=objectWidth;let objectContentHeight=objectHeight;if(this._rasterImage){const baseWidth=this._rasterImage.GetBaseWidth();const baseHeight=this._rasterImage.GetBaseHeight();if(baseWidth!==0&&baseHeight!==0){const svgAspectRatio=baseWidth/baseHeight;const objectAspectRatio=
+objectWidth/objectHeight;if(objectAspectRatio>svgAspectRatio){objectContentWidth=objectHeight*svgAspectRatio;objectContentHeight=objectHeight}else{objectContentWidth=objectWidth;objectContentHeight=objectWidth/svgAspectRatio}}}const w=objectContentWidth/objectWidth;const h=objectContentHeight/objectHeight;const ox=wi.GetOriginX();const oy=wi.GetOriginY();tempRect.setWH(ox-ox*w,oy-oy*h,w,h);this._collisionPoly.setFromRect(tempRect,ox,oy);wi.SetSourceCollisionPoly(this._collisionPoly)}_GetRasterImage(){return this._rasterImage}OnWebGLContextLost(){this._ReleaseRasterImage()}OnWebGLContextRestored(){this._UpdateRasterImage()}Draw(renderer){const wi=
+this.GetWorldInfo();const layer=wi.GetLayer();if(!this._rasterImage)return;const baseWidth=this._rasterImage.GetBaseWidth();const baseHeight=this._rasterImage.GetBaseHeight();if(baseWidth===0||baseHeight===0)return;const objectWidth=Math.abs(wi.GetWidth());const objectHeight=Math.abs(wi.GetHeight());const z=wi.GetZElevation();const deviceWidth=layer._GetLayerToDrawSurfaceScale(objectWidth,z);const deviceHeight=layer._GetLayerToDrawSurfaceScale(objectHeight,z);const svgAspectRatio=baseWidth/baseHeight;
+const objectAspectRatio=objectWidth/objectHeight;let objectContentWidth=0;let objectContentHeight=0;let rasterImageWidth=0;let rasterImageHeight=0;if(objectAspectRatio>svgAspectRatio){rasterImageWidth=deviceHeight*svgAspectRatio;rasterImageHeight=deviceHeight;objectContentWidth=objectHeight*svgAspectRatio;objectContentHeight=objectHeight}else{rasterImageWidth=deviceWidth;rasterImageHeight=deviceWidth/svgAspectRatio;objectContentWidth=objectWidth;objectContentHeight=objectWidth/svgAspectRatio}this._rasterImage.StartRasterForSize(renderer,
+rasterImageWidth,rasterImageHeight);const texture=this._rasterImage.GetRasterizedResult();if(!texture)return;renderer.SetTexture(texture);const x=wi.GetX();const y=wi.GetY();const w=objectContentWidth*Math.sign(wi.GetWidth());const h=objectContentHeight*Math.sign(wi.GetHeight());tempRect.setWH(x-wi.GetOriginX()*w,y-wi.GetOriginY()*h,w,h);const a=wi.GetAngle();if(a===0)tempQuad.setFromRect(tempRect);else{tempRect.offset(-x,-y);tempQuad.setFromRotatedRectPrecalc(tempRect,wi.GetSinAngle(),wi.GetCosAngle());
+tempQuad.offset(x,y)}tempRect.set(0,0,this._rasterImage.GetRasterWidth()/texture.GetWidth(),this._rasterImage.GetRasterHeight()/texture.GetHeight());renderer.Quad3(tempQuad,tempRect)}GetPropertyValueByIndex(index){}SetPropertyValueByIndex(index,value){}_SetImage(url){this._svgFilename=url;this._UpdateRasterImage()}GetCurrentSurfaceSize(){if(this._rasterImage){const texture=this._rasterImage.GetRasterizedResult();if(texture)return[texture.GetWidth(),texture.GetHeight()]}return[100,100]}GetCurrentTexRect(){if(this._rasterImage){const texture=
+this._rasterImage.GetRasterizedResult();if(texture){tempRect.set(0,0,this._rasterImage.GetRasterWidth()/texture.GetWidth(),this._rasterImage.GetRasterHeight()/texture.GetHeight());return tempRect}}return null}}};
+
+
+'use strict';{const C3=self.C3;C3.Plugins.SVGPicture.Cnds={}};
+
+
+'use strict';{const C3=self.C3;C3.Plugins.SVGPicture.Acts={SetImage(file){this._SetImage(file)},SetImageByName(file){this._SetImage(file)},SetEffect(effect){this.GetWorldInfo().SetBlendMode(effect);this._runtime.UpdateRender()}}};
+
+
+'use strict';{const C3=self.C3;C3.Plugins.SVGPicture.Exps={}};
+
+
+'use strict';{const C3=self.C3;C3.Plugins.Touch=class TouchPlugin extends C3.SDKPluginBase{constructor(opts){super(opts)}Release(){super.Release()}}};
+
+
+'use strict';{const C3=self.C3;C3.Plugins.Touch.Type=class TouchType extends C3.SDKTypeBase{constructor(objectClass){super(objectClass)}Release(){super.Release()}OnCreate(){}GetScriptInterfaceClass(){return self.ITouchObjectType}};let touchObjectType=null;function GetTouchSdkInstance(){return touchObjectType.GetSingleGlobalInstance().GetSdkInstance()}self.ITouchObjectType=class ITouchObjectType extends self.IObjectClass{constructor(objectType){super(objectType);touchObjectType=objectType;objectType.GetRuntime()._GetCommonScriptInterfaces().touch=
+this}requestPermission(type){const touchInst=GetTouchSdkInstance();if(type==="orientation")return touchInst._RequestPermission(0);else if(type==="motion")return touchInst._RequestPermission(1);else throw new Error("invalid type");}}};
+
+
+'use strict';{const C3=self.C3;const DOM_COMPONENT_ID="touch";C3.Plugins.Touch.Instance=class TouchInstance extends C3.SDKInstanceBase{constructor(inst,properties){super(inst,DOM_COMPONENT_ID);this._touches=new Map;this._useMouseInput=false;this._isMouseDown=false;this._orientCompassHeading=0;this._orientAlpha=0;this._orientBeta=0;this._orientGamma=0;this._accX=0;this._accY=0;this._accZ=0;this._accWithGX=0;this._accWithGY=0;this._accWithGZ=0;this._triggerIndex=0;this._triggerId=0;this._triggerPermission=
+0;this._curTouchX=0;this._curTouchY=0;this._getTouchIndex=0;this._permissionPromises=[];if(properties)this._useMouseInput=properties[0];this.AddDOMMessageHandler("permission-result",e=>this._OnPermissionResult(e));const rt=this.GetRuntime().Dispatcher();this._disposables=new C3.CompositeDisposable(C3.Disposable.From(rt,"pointerdown",e=>this._OnPointerDown(e.data)),C3.Disposable.From(rt,"pointermove",e=>this._OnPointerMove(e.data)),C3.Disposable.From(rt,"pointerup",e=>this._OnPointerUp(e.data,false)),
+C3.Disposable.From(rt,"pointercancel",e=>this._OnPointerUp(e.data,true)),C3.Disposable.From(rt,"deviceorientation",e=>this._OnDeviceOrientation(e.data)),C3.Disposable.From(rt,"deviceorientationabsolute",e=>this._OnDeviceOrientationAbsolute(e.data)),C3.Disposable.From(rt,"devicemotion",e=>this._OnDeviceMotion(e.data)),C3.Disposable.From(rt,"tick2",e=>this._OnTick2()))}Release(){this._touches.clear();super.Release()}_OnPointerDown(e){if(e["pointerType"]==="mouse")if(this._useMouseInput)this._isMouseDown=
+true;else return;const pointerId=e["pointerId"];if(this._touches.has(pointerId))return;const x=e["pageX"]-this._runtime.GetCanvasClientX();const y=e["pageY"]-this._runtime.GetCanvasClientY();const nowTime=performance.now();const index=this._touches.size;this._triggerIndex=index;this._triggerId=pointerId;const touchInfo=C3.New(C3.Plugins.Touch.TouchInfo);touchInfo.Init(nowTime,x,y,pointerId,index);this._touches.set(pointerId,touchInfo);this.Trigger(C3.Plugins.Touch.Cnds.OnNthTouchStart);this.Trigger(C3.Plugins.Touch.Cnds.OnTouchStart);
+this._curTouchX=x;this._curTouchY=y;this.Trigger(C3.Plugins.Touch.Cnds.OnTouchObject)}_OnPointerMove(e){if(e["pointerType"]==="mouse"&&!this._isMouseDown)return;const touchInfo=this._touches.get(e["pointerId"]);if(!touchInfo)return;const nowTime=performance.now();if(nowTime-touchInfo.GetTime()<2)return;const x=e["pageX"]-this._runtime.GetCanvasClientX();const y=e["pageY"]-this._runtime.GetCanvasClientY();touchInfo.Update(nowTime,x,y,e["width"],e["height"],e["pressure"])}_OnPointerUp(e,isCancel){if(e["pointerType"]===
+"mouse")if(this._isMouseDown)this._isMouseDown=false;else return;const nowTime=performance.now();const pointerId=e["pointerId"];const touchInfo=this._touches.get(pointerId);if(!touchInfo)return;this._triggerIndex=touchInfo.GetStartIndex();this._triggerId=touchInfo.GetId();this.Trigger(C3.Plugins.Touch.Cnds.OnNthTouchEnd);this.Trigger(C3.Plugins.Touch.Cnds.OnTouchEnd);if(!isCancel){const tap=touchInfo.ShouldTriggerTap(nowTime);if(tap==="single-tap"){this.Trigger(C3.Plugins.Touch.Cnds.OnTapGesture);
+this._curTouchX=touchInfo.GetX();this._curTouchY=touchInfo.GetY();this.Trigger(C3.Plugins.Touch.Cnds.OnTapGestureObject)}else if(tap==="double-tap"){this.Trigger(C3.Plugins.Touch.Cnds.OnDoubleTapGesture);this._curTouchX=touchInfo.GetX();this._curTouchY=touchInfo.GetY();this.Trigger(C3.Plugins.Touch.Cnds.OnDoubleTapGestureObject)}}touchInfo.Release();this._touches.delete(pointerId)}_RequestPermission(type){this._PostToDOMMaybeSync("request-permission",{"type":type});return new Promise((resolve,reject)=>
+{this._permissionPromises.push({type,resolve,reject})})}_OnPermissionResult(e){const isGranted=e["result"];const type=e["type"];this._triggerPermission=type;const toResolve=this._permissionPromises.filter(o=>o.type===type);for(const o of toResolve)o.resolve(isGranted?"granted":"denied");this._permissionPromises=this._permissionPromises.filter(o=>o.type!==type);if(isGranted){this.Trigger(C3.Plugins.Touch.Cnds.OnPermissionGranted);if(type===0)this._runtime.RequestDeviceOrientationEvent();else this._runtime.RequestDeviceMotionEvent()}else this.Trigger(C3.Plugins.Touch.Cnds.OnPermissionDenied)}_OnDeviceOrientation(e){if(typeof e["webkitCompassHeading"]===
+"number")this._orientCompassHeading=e["webkitCompassHeading"];else if(e["absolute"])this._orientCompassHeading=e["alpha"];this._orientAlpha=e["alpha"];this._orientBeta=e["beta"];this._orientGamma=e["gamma"]}_OnDeviceOrientationAbsolute(e){this._orientCompassHeading=e["alpha"]}_OnDeviceMotion(e){const acc=e["acceleration"];if(acc){this._accX=acc["x"];this._accY=acc["y"];this._accZ=acc["z"]}const withG=e["accelerationIncludingGravity"];if(withG){this._accWithGX=withG["x"];this._accWithGY=withG["y"];
+this._accWithGZ=withG["z"]}}_OnTick2(){const nowTime=performance.now();let index=0;for(const touchInfo of this._touches.values()){if(touchInfo.GetTime()<=nowTime-50)touchInfo._SetLastTime(nowTime);if(touchInfo.ShouldTriggerHold(nowTime)){this._triggerIndex=touchInfo.GetStartIndex();this._triggerId=touchInfo.GetId();this._getTouchIndex=index;this.Trigger(C3.Plugins.Touch.Cnds.OnHoldGesture);this._curTouchX=touchInfo.GetX();this._curTouchY=touchInfo.GetY();this.Trigger(C3.Plugins.Touch.Cnds.OnHoldGestureObject);
+this._getTouchIndex=0}++index}}_GetTouchByIndex(index){index=Math.floor(index);for(const touchInfo of this._touches.values()){if(index===0)return touchInfo;--index}return null}_IsClientPosOnCanvas(touchX,touchY){return touchX>=0&&touchY>=0&&touchX<this._runtime.GetCanvasCssWidth()&&touchY<this._runtime.GetCanvasCssHeight()}GetDebuggerProperties(){const prefix="plugins.touch.debugger";return[{title:prefix+".touches",properties:[...this._touches.values()].map(ti=>({name:"$"+ti.GetId(),value:ti.GetX()+
+", "+ti.GetY()}))}]}}};
+
+
+'use strict';{const C3=self.C3;const tempArr=[];C3.Plugins.Touch.Cnds={OnTouchStart(){return true},OnTouchEnd(){return true},IsInTouch(){return this._touches.size>0},OnTouchObject(objectClass){if(!objectClass)return false;if(!this._IsClientPosOnCanvas(this._curTouchX,this._curTouchY))return false;return this._runtime.GetCollisionEngine().TestAndSelectCanvasPointOverlap(objectClass,this._curTouchX,this._curTouchY,false)},IsTouchingObject(objectClass){if(!objectClass)return false;const sol=objectClass.GetCurrentSol();
+const instances=sol.GetInstances();for(const inst of instances){const wi=inst.GetWorldInfo();const layer=wi.GetLayer();for(const touchInfo of this._touches.values()){if(!this._IsClientPosOnCanvas(touchInfo.GetX(),touchInfo.GetY()))continue;const [px,py]=layer.CanvasCssToLayer(touchInfo.GetX(),touchInfo.GetY(),wi.GetTotalZElevation());if(wi.ContainsPoint(px,py)){tempArr.push(inst);break}}}if(tempArr.length){sol.SetArrayPicked(tempArr);objectClass.ApplySolToContainer();C3.clearArray(tempArr);return true}else return false},
+CompareTouchSpeed(index,cmp,s){const touchInfo=this._GetTouchByIndex(index);if(!touchInfo)return false;return C3.compare(touchInfo.GetSpeed(),cmp,s)},OrientationSupported(){return true},MotionSupported(){return true},CompareOrientation(orientation,cmp,a){this._runtime.RequestDeviceOrientationEvent();let v=0;if(orientation===0)v=this._orientAlpha;else if(orientation===1)v=this._orientBeta;else v=this._orientGamma;return C3.compare(v,cmp,a)},CompareAcceleration(a,cmp,x){this._runtime.RequestDeviceMotionEvent();
+let v=0;if(a===0)v=this._accWithGX;else if(a===1)v=this._accWithGY;else if(a===2)v=this._accWithGZ;else if(a===3)v=this._accX;else if(a===4)v=this._accY;else v=this._accZ;return C3.compare(v,cmp,x)},OnNthTouchStart(index){index=Math.floor(index);return index===this._triggerIndex},OnNthTouchEnd(index){index=Math.floor(index);return index===this._triggerIndex},HasNthTouch(index){index=Math.floor(index);return this._touches.size>=index+1},OnHoldGesture(){return true},OnTapGesture(){return true},OnDoubleTapGesture(){return true},
+OnHoldGestureObject(objectClass){if(!objectClass)return false;if(!this._IsClientPosOnCanvas(this._curTouchX,this._curTouchY))return false;return this._runtime.GetCollisionEngine().TestAndSelectCanvasPointOverlap(objectClass,this._curTouchX,this._curTouchY,false)},OnTapGestureObject(objectClass){if(!objectClass)return false;if(!this._IsClientPosOnCanvas(this._curTouchX,this._curTouchY))return false;return this._runtime.GetCollisionEngine().TestAndSelectCanvasPointOverlap(objectClass,this._curTouchX,
+this._curTouchY,false)},OnDoubleTapGestureObject(objectClass){if(!objectClass)return false;if(!this._IsClientPosOnCanvas(this._curTouchX,this._curTouchY))return false;return this._runtime.GetCollisionEngine().TestAndSelectCanvasPointOverlap(objectClass,this._curTouchX,this._curTouchY,false)},OnPermissionGranted(type){return this._triggerPermission===type},OnPermissionDenied(type){return this._triggerPermission===type}}};
+
+
+'use strict';{const C3=self.C3;C3.Plugins.Touch.Acts={RequestPermission(type){this._RequestPermission(type)}}};
+
+
+'use strict';{const C3=self.C3;C3.Plugins.Touch.Exps={TouchCount(){return this._touches.size},X(layerParam){const touchInfo=this._GetTouchByIndex(this._getTouchIndex);if(!touchInfo)return 0;return touchInfo.GetPositionForLayer(this._runtime.GetCurrentLayout(),layerParam,true)},Y(layerParam){const touchInfo=this._GetTouchByIndex(this._getTouchIndex);if(!touchInfo)return 0;return touchInfo.GetPositionForLayer(this._runtime.GetCurrentLayout(),layerParam,false)},XAt(index,layerParam){const touchInfo=
+this._GetTouchByIndex(index);if(!touchInfo)return 0;return touchInfo.GetPositionForLayer(this._runtime.GetCurrentLayout(),layerParam,true)},YAt(index,layerParam){const touchInfo=this._GetTouchByIndex(index);if(!touchInfo)return 0;return touchInfo.GetPositionForLayer(this._runtime.GetCurrentLayout(),layerParam,false)},XForID(id,layerParam){const touchInfo=this._touches.get(id);if(!touchInfo)return 0;return touchInfo.GetPositionForLayer(this._runtime.GetCurrentLayout(),layerParam,true)},YForID(id,layerParam){const touchInfo=
+this._touches.get(id);if(!touchInfo)return 0;return touchInfo.GetPositionForLayer(this._runtime.GetCurrentLayout(),layerParam,false)},AbsoluteX(){const touchInfo=this._GetTouchByIndex(0);if(touchInfo)return touchInfo.GetX();else return 0},AbsoluteY(){const touchInfo=this._GetTouchByIndex(0);if(touchInfo)return touchInfo.GetY();else return 0},AbsoluteXAt(index){const touchInfo=this._GetTouchByIndex(index);if(touchInfo)return touchInfo.GetX();else return 0},AbsoluteYAt(index){const touchInfo=this._GetTouchByIndex(index);
+if(touchInfo)return touchInfo.GetY();else return 0},AbsoluteXForID(id){const touchInfo=this._touches.get(id);if(touchInfo)return touchInfo.GetX();else return 0},AbsoluteYForID(id){const touchInfo=this._touches.get(id);if(touchInfo)return touchInfo.GetY();else return 0},SpeedAt(index){const touchInfo=this._GetTouchByIndex(index);if(touchInfo)return touchInfo.GetSpeed();else return 0},SpeedForID(id){const touchInfo=this._touches.get(id);if(touchInfo)return touchInfo.GetSpeed();else return 0},AngleAt(index){const touchInfo=
+this._GetTouchByIndex(index);if(touchInfo)return C3.toDegrees(touchInfo.GetAngle());else return 0},AngleForID(id){const touchInfo=this._touches.get(id);if(touchInfo)return C3.toDegrees(touchInfo.GetAngle());else return 0},CompassHeading(){this._runtime.RequestDeviceOrientationEvent();return this._orientCompassHeading},Alpha(){this._runtime.RequestDeviceOrientationEvent();return this._orientAlpha},Beta(){this._runtime.RequestDeviceOrientationEvent();return this._orientBeta},Gamma(){this._runtime.RequestDeviceOrientationEvent();
+return this._orientGamma},AccelerationXWithG(){this._runtime.RequestDeviceMotionEvent();return this._accWithGX},AccelerationYWithG(){this._runtime.RequestDeviceMotionEvent();return this._accWithGY},AccelerationZWithG(){this._runtime.RequestDeviceMotionEvent();return this._accWithGZ},AccelerationX(){this._runtime.RequestDeviceMotionEvent();return this._accX},AccelerationY(){this._runtime.RequestDeviceMotionEvent();return this._accY},AccelerationZ(){this._runtime.RequestDeviceMotionEvent();return this._accZ},
+TouchIndex(){return this._triggerIndex},TouchID(){return this._triggerId},WidthForID(id){const touchInfo=this._touches.get(id);if(touchInfo)return touchInfo.GetWidth();else return 0},HeightForID(id){const touchInfo=this._touches.get(id);if(touchInfo)return touchInfo.GetHeight();else return 0},PressureForID(id){const touchInfo=this._touches.get(id);if(touchInfo)return touchInfo.GetPressure();else return 0}}};
+
+
+'use strict';{const C3=self.C3;const GESTURE_HOLD_THRESHOLD=15;const GESTURE_HOLD_TIMEOUT=500;const GESTURE_TAP_TIMEOUT=333;const GESTURE_DOUBLETAP_THRESHOLD=25;let lastTapX=-1E3;let lastTapY=-1E3;let lastTapTime=-1E4;C3.Plugins.Touch.TouchInfo=class TouchInfo extends C3.DefendedBase{constructor(){super();this._pointerId=0;this._startIndex=0;this._startTime=0;this._time=0;this._lastTime=0;this._startX=0;this._startY=0;this._x=0;this._y=0;this._lastX=0;this._lastY=0;this._width=0;this._height=0;this._pressure=
+0;this._hasTriggeredHold=false;this._isTooFarForHold=false}Release(){}Init(nowTime,x,y,id,index){this._pointerId=id;this._startIndex=index;this._time=nowTime;this._lastTime=nowTime;this._startTime=nowTime;this._startX=x;this._startY=y;this._x=x;this._y=y;this._lastX=x;this._lastY=y}Update(nowTime,x,y,width,height,pressure){this._lastTime=this._time;this._time=nowTime;this._lastX=this._x;this._lastY=this._y;this._x=x;this._y=y;this._width=width;this._height=height;this._pressure=pressure;if(!this._isTooFarForHold&&
+C3.distanceTo(this._startX,this._startY,this._x,this._y)>=GESTURE_HOLD_THRESHOLD)this._isTooFarForHold=true}GetId(){return this._pointerId}GetStartIndex(){return this._startIndex}GetTime(){return this._time}_SetLastTime(t){this._lastTime=t}GetX(){return this._x}GetY(){return this._y}GetSpeed(){const dist=C3.distanceTo(this._x,this._y,this._lastX,this._lastY);const dt=(this._time-this._lastTime)/1E3;if(dt>0)return dist/dt;else return 0}GetAngle(){return C3.angleTo(this._lastX,this._lastY,this._x,this._y)}GetWidth(){return this._width}GetHeight(){return this._height}GetPressure(){return this._pressure}ShouldTriggerHold(nowTime){if(this._hasTriggeredHold)return false;
+if(nowTime-this._startTime>=GESTURE_HOLD_TIMEOUT&&!this._isTooFarForHold&&C3.distanceTo(this._startX,this._startY,this._x,this._y)<GESTURE_HOLD_THRESHOLD){this._hasTriggeredHold=true;return true}return false}ShouldTriggerTap(nowTime){if(this._hasTriggeredHold)return"";if(nowTime-this._startTime<=GESTURE_TAP_TIMEOUT&&!this._isTooFarForHold&&C3.distanceTo(this._startX,this._startY,this._x,this._y)<GESTURE_HOLD_THRESHOLD)if(nowTime-lastTapTime<=GESTURE_TAP_TIMEOUT*2&&C3.distanceTo(lastTapX,lastTapY,
+this._x,this._y)<GESTURE_DOUBLETAP_THRESHOLD){lastTapX=-1E3;lastTapY=-1E3;lastTapTime=-1E4;return"double-tap"}else{lastTapX=this._x;lastTapY=this._y;lastTapTime=nowTime;return"single-tap"}return""}GetPositionForLayer(layout,layerNameOrNumber,getx){if(typeof layerNameOrNumber==="undefined"){const layer=layout.GetLayerByIndex(0);return layer.CanvasCssToLayer_DefaultTransform(this._x,this._y)[getx?0:1]}else{const layer=layout.GetLayer(layerNameOrNumber);if(layer)return layer.CanvasCssToLayer(this._x,
+this._y)[getx?0:1];else return 0}}}};
+
+
+'use strict';{const C3=self.C3;C3.Plugins.Browser=class BrowserPlugin extends C3.SDKPluginBase{constructor(opts){super(opts)}Release(){super.Release()}}};
+
+
+'use strict';{const C3=self.C3;C3.Plugins.Browser.Type=class BrowserType extends C3.SDKTypeBase{constructor(objectClass){super(objectClass)}Release(){super.Release()}OnCreate(){}}};
+
+
+'use strict';{const C3=self.C3;const DOM_COMPONENT_ID="browser";C3.Plugins.Browser.Instance=class BrowserInstance extends C3.SDKInstanceBase{constructor(inst,properties){super(inst,DOM_COMPONENT_ID);this._initLocationStr="";this._isOnline=false;this._referrer="";this._docTitle="";this._isCookieEnabled=false;this._screenWidth=0;this._screenHeight=0;this._windowOuterWidth=0;this._windowOuterHeight=0;this._isScirraArcade=false;this.AddDOMMessageHandlers([["online-state",e=>this._OnOnlineStateChanged(e)],
+["backbutton",()=>this._OnBackButton()],["sw-message",e=>this._OnSWMessage(e)],["hashchange",e=>this._OnHashChange(e)]]);const rt=this.GetRuntime().Dispatcher();this._disposables=new C3.CompositeDisposable(C3.Disposable.From(rt,"afterfirstlayoutstart",()=>this._OnAfterFirstLayoutStart()),C3.Disposable.From(rt,"window-resize",()=>this._OnWindowResize()),C3.Disposable.From(rt,"suspend",()=>this._OnSuspend()),C3.Disposable.From(rt,"resume",()=>this._OnResume()));this._runtime.AddLoadPromise(this.PostToDOMAsync("get-initial-state",
+{"exportType":this._runtime.GetExportType()}).then(data=>{this._initLocationStr=data["location"];this._isOnline=data["isOnline"];this._referrer=data["referrer"];this._docTitle=data["title"];this._isCookieEnabled=data["isCookieEnabled"];this._screenWidth=data["screenWidth"];this._screenHeight=data["screenHeight"];this._windowOuterWidth=data["windowOuterWidth"];this._windowOuterHeight=data["windowOuterHeight"];this._isScirraArcade=data["isScirraArcade"]}))}Release(){super.Release()}_OnAfterFirstLayoutStart(){this.PostToDOM("ready-for-sw-messages")}async _OnOnlineStateChanged(e){const isOnline=
+!!e["isOnline"];if(this._isOnline===isOnline)return;this._isOnline=isOnline;if(this._isOnline)await this.TriggerAsync(C3.Plugins.Browser.Cnds.OnOnline);else await this.TriggerAsync(C3.Plugins.Browser.Cnds.OnOffline)}async _OnWindowResize(){await this.TriggerAsync(C3.Plugins.Browser.Cnds.OnResize)}_OnSuspend(){this.Trigger(C3.Plugins.Browser.Cnds.OnPageHidden)}_OnResume(){this.Trigger(C3.Plugins.Browser.Cnds.OnPageVisible)}async _OnBackButton(){await this.TriggerAsync(C3.Plugins.Browser.Cnds.OnBackButton)}_OnSWMessage(e){const messageType=
+e["type"];if(messageType==="downloading-update")this.Trigger(C3.Plugins.Browser.Cnds.OnUpdateFound);else if(messageType==="update-ready"||messageType==="update-pending")this.Trigger(C3.Plugins.Browser.Cnds.OnUpdateReady);else if(messageType==="offline-ready")this.Trigger(C3.Plugins.Browser.Cnds.OnOfflineReady)}_OnHashChange(e){this._initLocationStr=e["location"];this.Trigger(C3.Plugins.Browser.Cnds.OnHashChange)}GetDebuggerProperties(){const prefix="plugins.browser.debugger";return[{title:"plugins.browser.name",
+properties:[{name:prefix+".user-agent",value:navigator.userAgent},{name:prefix+".is-online",value:this._isOnline},{name:prefix+".is-fullscreen",value:this._runtime.GetCanvasManager().IsDocumentFullscreen()}]}]}}};
+
+
+'use strict';{const C3=self.C3;C3.Plugins.Browser.Cnds={IsOnline(){return this._isOnline},OnOnline(){return true},OnOffline(){return true},OnResize(){return true},CookiesEnabled(){return this._isCookieEnabled},IsFullscreen(){return this._runtime.GetCanvasManager().IsDocumentFullscreen()},OnBackButton(){return true},IsPortraitLandscape(p){const lastInnerWidth=this._runtime.GetCanvasManager().GetLastWidth();const lastInnerHeight=this._runtime.GetCanvasManager().GetLastHeight();const current=lastInnerWidth<=
+lastInnerHeight?0:1;return current===p},OnUpdateFound(){return true},OnUpdateReady(){return true},OnOfflineReady(){return true},OnHashChange(){return true},PageVisible(){return!this._runtime.IsSuspended()},OnPageHidden(){return true},OnPageVisible(){return true},HasJava(){return false},IsDownloadingUpdate(){return false},OnMenuButton(){return false},OnSearchButton(){return false},IsMetered(){return false},IsCharging(){return true},SupportsFullscreen(){return true}}};
+
+
+'use strict';{const C3=self.C3;const ORIENTATIONS=["portrait","landscape","portrait-primary","portrait-secondary","landscape-primary","landscape-secondary"];C3.Plugins.Browser.Acts={Alert(message){this.PostToDOM("alert",{"message":message.toString()})},Close(){if(this._isScirraArcade)return;if(this._runtime.IsDebug())self.C3Debugger.CloseWindow();else this.PostToDOM("close")},Focus(){this.PostToDOM("set-focus",{"isFocus":true})},Blur(){this.PostToDOM("set-focus",{"isFocus":false})},GoBack(){if(this._isScirraArcade)return;
+this.PostToDOM("navigate",{"type":"back"})},GoForward(){if(this._isScirraArcade)return;this.PostToDOM("navigate",{"type":"forward"})},GoHome(){if(this._isScirraArcade)return;this.PostToDOM("navigate",{"type":"home"})},Reload(){if(this._isScirraArcade)return;if(this._runtime.IsDebug())this._runtime.PostToDebugger({"type":"reload"});else this.PostToDOM("navigate",{"type":"reload"})},GoToURL(url,target){this._PostToDOMMaybeSync("navigate",{"type":"url","url":url,"target":target,"exportType":this._runtime.GetExportType()})},
+GoToURLWindow(url,tag){this._PostToDOMMaybeSync("navigate",{"type":"new-window","url":url,"tag":tag,"exportType":this._runtime.GetExportType()})},RequestFullScreen(mode,navUi){if(mode>=2)mode+=1;if(mode===6)mode=2;if(mode===1)mode=0;const modeStr=C3.CanvasManager._FullscreenModeNumberToString(mode);this._runtime.GetCanvasManager().SetDocumentFullscreenMode(modeStr);this._PostToDOMMaybeSync("request-fullscreen",{"navUI":navUi})},CancelFullScreen(){this._PostToDOMMaybeSync("exit-fullscreen")},Vibrate(pattern){const arr=
+pattern.split(",");for(let i=0,len=arr.length;i<len;++i)arr[i]=parseInt(arr[i],10);this._PostToDOMMaybeSync("vibrate",{"pattern":arr})},async InvokeDownload(url,filename){if(!filename)return;const urlToDownload=await this._runtime.GetAssetManager().GetProjectFileUrl(url);this._runtime.InvokeDownload(urlToDownload,filename)},InvokeDownloadString(str,mimeType,filename){if(!filename)return;const dataUri=`data:${mimeType},${encodeURIComponent(str)}`;this._runtime.InvokeDownload(dataUri,filename)},ConsoleLog(type,
+msg){msg=msg.toString();if(type===0)console.log(msg);else if(type===1)console.warn(msg);else if(type===2)console.error(msg)},ConsoleGroup(name){console.group(name)},ConsoleGroupEnd(){console.groupEnd()},ExecJs(jsStr){try{eval(jsStr)}catch(err){console.error("Error executing JavaScript: ",err)}},LockOrientation(o){o=Math.floor(o);if(o<0||o>=ORIENTATIONS.length)return;const orientation=ORIENTATIONS[o];this._PostToDOMMaybeSync("lock-orientation",{"orientation":orientation})},UnlockOrientation(){this._PostToDOMMaybeSync("unlock-orientation")},
+LoadStyleSheet(url){this._runtime.GetAssetManager().LoadStyleSheet(url)},SetHash(h){this.PostToDOM("set-hash",{"hash":h})}}};
+
+
+'use strict';{const C3=self.C3;C3.Plugins.Browser.Exps={URL(){if(this._runtime.IsInWorker())return this._initLocationStr;else return location.toString()},Protocol(){if(this._runtime.IsInWorker())return(new URL(this._initLocationStr)).protocol;else return location.protocol},Domain(){if(this._runtime.IsInWorker())return(new URL(this._initLocationStr)).hostname;else return location.hostname},Port(){if(this._runtime.IsInWorker())return(new URL(this._initLocationStr)).port;else return location.port},PathName(){if(this._runtime.IsInWorker())return(new URL(this._initLocationStr)).pathname;
+else return location.pathname},Hash(){if(this._runtime.IsInWorker())return(new URL(this._initLocationStr)).hash;else return location.hash},QueryString(){if(this._runtime.IsInWorker())return(new URL(this._initLocationStr)).search;else return location.search},QueryParam(param){const search=this._runtime.IsInWorker()?(new URL(this._initLocationStr)).search:location.search;const match=RegExp("[?&]"+param+"=([^&]*)").exec(search);if(match)return decodeURIComponent(match[1].replace(/\+/g," "));else return""},
+Referrer(){return this._referrer},Title(){return this._docTitle},Language(){return navigator.language},Platform(){return navigator.platform},UserAgent(){return navigator.userAgent},ExecJS(jsStr){let result=0;try{result=eval(jsStr)}catch(err){console.error("Error executing JavaScript: ",err)}if(typeof result==="number"||typeof result==="string")return result;if(typeof result==="boolean")return result?1:0;else return 0},Name(){return navigator.appName},Version(){return navigator.appVersion},Product(){return navigator.product},
+Vendor(){return navigator.vendor},BatteryLevel(){return 1},BatteryTimeLeft(){return Infinity},Bandwidth(){const connection=navigator["connection"];if(connection)return connection["downlink"]||connection["downlinkMax"]||connection["bandwidth"]||Infinity;else return Infinity},ConnectionType(){const connection=navigator["connection"];if(connection)return connection["type"]||"unknown";else return"unknown"},DevicePixelRatio(){return self.devicePixelRatio},ScreenWidth(){return this._screenWidth},ScreenHeight(){return this._screenHeight},
+WindowInnerWidth(){return this._runtime.GetCanvasManager().GetLastWidth()},WindowInnerHeight(){return this._runtime.GetCanvasManager().GetLastHeight()},WindowOuterWidth(){return this._windowOuterWidth},WindowOuterHeight(){return this._windowOuterWidth}}};
+
+
 'use strict';{const C3=self.C3;C3.Behaviors.Platform=class PlatformBehavior extends C3.SDKBehaviorBase{constructor(opts){super(opts)}Release(){super.Release()}}};
 
 
@@ -3064,46 +3201,59 @@ this._ray;return ray.DidCollide()?ray.hitY+length*ray.normalY:0},NormalAngle(){c
 		C3.Plugins.Mouse,
 		C3.Behaviors.LOS,
 		C3.Plugins.Audio,
+		C3.Plugins.Button,
+		C3.Plugins.SVGPicture,
+		C3.Plugins.Touch,
+		C3.Plugins.Browser,
 		C3.Plugins.System.Cnds.IsGroupActive,
 		C3.Plugins.Keyboard.Cnds.IsKeyDown,
 		C3.Behaviors.Platform.Acts.SimulateControl,
 		C3.Behaviors.Platform.Acts.SetDoubleJumpEnabled,
 		C3.Plugins.Sprite.Acts.SetMirrored,
+		C3.Plugins.Sprite.Acts.SetInstanceVar,
 		C3.Plugins.Keyboard.Cnds.IsLeftRightKeyDown,
 		C3.Plugins.Sprite.Acts.SetX,
 		C3.Plugins.Sprite.Exps.X,
 		C3.Plugins.Sprite.Acts.SetY,
 		C3.Plugins.Sprite.Exps.Y,
+		C3.Plugins.Sprite.Cnds.OnCollision,
+		C3.Plugins.System.Acts.SubVar,
+		C3.Plugins.System.Cnds.CompareVar,
+		C3.Plugins.Sprite.Acts.Destroy,
+		C3.Plugins.System.Acts.GoToLayout,
 		C3.Behaviors.LOS.Cnds.HasLOSToObject,
 		C3.Plugins.Sprite.Cnds.IsBoolInstanceVarSet,
 		C3.Plugins.Sprite.Acts.SetBoolInstanceVar,
 		C3.Behaviors.LOS.Acts.SetCone,
 		C3.Plugins.Sprite.Cnds.CompareInstanceVar,
-		C3.Plugins.Sprite.Acts.SetInstanceVar,
 		C3.Plugins.Sprite.Cnds.CompareX,
 		C3.Plugins.System.Cnds.Else,
 		C3.Plugins.Sprite.Cnds.OnAnimFinished,
-		C3.Plugins.Sprite.Cnds.OnCollision,
-		C3.Plugins.System.Acts.SubVar,
-		C3.Plugins.Sprite.Acts.Destroy,
-		C3.Plugins.System.Cnds.CompareVar,
+		C3.Plugins.Audio.Acts.Play,
+		C3.Behaviors.Platform.Acts.SetMaxSpeed,
+		C3.Plugins.System.Acts.Wait,
+		C3.Plugins.Sprite.Acts.Spawn,
 		C3.Plugins.System.Cnds.EveryTick,
 		C3.Plugins.Sprite.Acts.SetAnim,
 		C3.Plugins.Sprite.Acts.SetWidth,
+		C3.Plugins.System.Cnds.Every,
 		C3.Plugins.Sprite.Cnds.OnCreated,
 		C3.Plugins.Sprite.Cnds.IsMirrored,
 		C3.Plugins.Sprite.Acts.SetAngle,
 		C3.Behaviors.Bullet.Acts.Bounce,
 		C3.Plugins.Mouse.Cnds.OnClick,
-		C3.Plugins.Sprite.Acts.Spawn,
 		C3.Plugins.Sprite.Acts.SetTowardPosition,
 		C3.Plugins.Mouse.Exps.X,
 		C3.Plugins.System.Cnds.OnLayoutStart,
-		C3.Plugins.Audio.Acts.Play,
-		C3.Plugins.Sprite.Cnds.OnAnyAnimFinished
+		C3.Plugins.Sprite.Cnds.OnAnyAnimFinished,
+		C3.Plugins.Touch.Cnds.OnTapGestureObject,
+		C3.Plugins.Audio.Acts.StopAll,
+		C3.Plugins.System.Acts.SetVar,
+		C3.Plugins.Browser.Acts.Close
 		];
 	};
 	self.C3_JsPropNameTable = [
+		{state: 0},
 		{Platform: 0},
 		{Player: 0},
 		{Solid: 0},
@@ -3120,7 +3270,6 @@ this._ray;return ray.DidCollide()?ray.hitY+length*ray.normalY:0},NormalAngle(){c
 		{player_bullet: 0},
 		{Mouse: 0},
 		{active: 0},
-		{state: 0},
 		{dist: 0},
 		{LineOfSight: 0},
 		{Boss: 0},
@@ -3148,7 +3297,27 @@ this._ray;return ray.DidCollide()?ray.hitY+length*ray.normalY:0},NormalAngle(){c
 		{bosshp_healt: 0},
 		{playerhp_border: 0},
 		{playerhp_healt: 0},
+		{inviswall: 0},
+		{rune: 0},
+		{boss_bullet: 0},
+		{Text3: 0},
+		{Button: 0},
+		{Button2: 0},
+		{Text4: 0},
+		{SVGPicture: 0},
 		{Sprite: 0},
+		{Sprite2: 0},
+		{Button3: 0},
+		{Touch: 0},
+		{Sprite3: 0},
+		{Browser: 0},
+		{TiledBackground21: 0},
+		{Sprite4: 0},
+		{Sprite5: 0},
+		{TiledBackground22: 0},
+		{TiledBackground23: 0},
+		{Sprite6: 0},
+		{Sprite7: 0},
 		{PlayerHP: 0},
 		{PlayerHPMax: 0},
 		{BossHP: 0},
@@ -3256,6 +3425,7 @@ this._ray;return ray.DidCollide()?ray.hitY+length*ray.normalY:0},NormalAngle(){c
 	self.C3_ExpressionFuncs = [
 		() => "Movement",
 		() => "Player",
+		() => "walk",
 		p => {
 			const n0 = p._GetNode(0);
 			return () => (n0.ExpObject() + 10);
@@ -3264,15 +3434,23 @@ this._ray;return ray.DidCollide()?ray.hitY+length*ray.normalY:0},NormalAngle(){c
 			const n0 = p._GetNode(0);
 			return () => n0.ExpObject();
 		},
-		() => "Boss",
+		() => 10,
+		() => 5,
 		() => 0,
+		() => "Boss",
 		() => 360,
 		() => "atk",
 		() => "run",
 		() => "idle",
 		() => 128,
 		() => "atk1",
-		() => 20,
+		() => "corpse",
+		() => 15,
+		() => -20,
+		() => "",
+		() => "hurt",
+		() => "death",
+		() => 2,
 		p => {
 			const n0 = p._GetNode(0);
 			const n1 = p._GetNode(1);
@@ -3292,6 +3470,7 @@ this._ray;return ray.DidCollide()?ray.hitY+length*ray.normalY:0},NormalAngle(){c
 			const v4 = p._GetNode(4).GetVar();
 			return () => (n0.ExpInstVar() + ((v1.GetValue() - v2.GetValue()) * (n3.ExpInstVar() / v4.GetValue())));
 		},
+		() => 1.5,
 		() => "Attack & Bullet",
 		() => 180,
 		p => {
@@ -3299,8 +3478,9 @@ this._ray;return ray.DidCollide()?ray.hitY+length*ray.normalY:0},NormalAngle(){c
 			return () => f0();
 		},
 		() => "Character",
-		() => -15,
-		() => ""
+		() => 1,
+		() => 1000,
+		() => 100
 	];
 }
 
